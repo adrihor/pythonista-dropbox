@@ -6,7 +6,9 @@ except ImportError:
 try:
     import clipboard
 except ImportError:
-    pass
+    def set(string):
+        return string
+    clipboard = type('clipboard', (), {'set': set})
 import urllib
 import webbrowser
 import sys
@@ -46,6 +48,7 @@ def main():
     request_token = get_request_token(session)
     url = get_authorize_url(session, request_token)
     webbrowser.open(url)
+    clipboard.set(pwd)
     raw_input()
     access_token = session.obtain_access_token(request_token)
     keys = ('key', 'secret',)
