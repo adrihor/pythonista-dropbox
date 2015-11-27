@@ -54,7 +54,7 @@ def main():
     keys = ('key', 'secret',)
     creds = dict(zip(keys, [getattr(access_token, attr) for attr in keys]))
     creds = json.dumps(creds)
-    url = 'drafts4://x-callback/open?text={0}'.format(urllib.quote(creds))
+    url = 'drafts4://x-callback/create?text={0}'.format(urllib.quote(creds))
     webbrowser.open(url)
     return 0
 
