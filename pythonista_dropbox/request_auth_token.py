@@ -46,9 +46,7 @@ def main():
     request_token = get_request_token(session)
     url = get_authorize_url(session, request_token)
     webbrowser.open(url)
-    busy = True
-    while busy:
-        busy = raw_input("Open url and authorize.")
+    raw_input()
     access_token = session.obtain_access_token(request_token)
     keys = ('key', 'secret',)
     creds = dict(zip(keys, [getattr(access_token, attr) for attr in keys]))
@@ -59,4 +57,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main)
+    sys.exit(main())
