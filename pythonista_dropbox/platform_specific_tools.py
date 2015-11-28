@@ -27,7 +27,7 @@ class ModuleObject(object):
             imported_module = importlib.import_module(module)
             setattr(self, module, imported_module)
         else:
-            setattr(self, module, type('MockWebbrowser', (), {})())
+            setattr(self, module, type('MockModule', (), {})())
         self.module = module
 
     def mock_function(self, *args, **kwargs):
