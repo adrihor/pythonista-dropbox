@@ -37,7 +37,7 @@ class ModuleObject(object):
         """returns attr of webbrowser module if Pythonista
         """
         try:
-            attr = getattr(self.module, attr)
+			attrs = getattr(getattr(self, self.module), attr)
             return attr
         except AttributeError:
-            return self.mock_function 
+            return self.mock_function
