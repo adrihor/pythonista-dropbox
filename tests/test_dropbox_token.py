@@ -1,6 +1,6 @@
 import pytest
 
-@pytest.mark.current
 def test_Oauth_flow():
-    with pytest.raises(ImportError):
-        from dropbox.client import DropboxOAuth2FlowNoRedirect
+    from dropbox.client import DropboxOAuth2FlowNoRedirect
+
+    assert DropboxOAuth2FlowNoRedirect

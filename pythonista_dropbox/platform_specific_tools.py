@@ -1,4 +1,5 @@
 import platform
+import importlib
 
 
 class Platform(object):
@@ -15,3 +16,28 @@ class Platform(object):
             self.pythonista = False
 
 
+class ModuleObject(object):
+    platform = Platform()
+
+    """substitute for Pythonisa-only modules to aid in Pythonista development
+    on non-iOS platform"""
+
+    def __init__(self, module):
+        if self.platform.pythonista:
+            imported_module = importlib.import_module(module)
+            setattr(self, module, imported_module)
+        else:
+            setattr(self, module, type('MockWebbrowser', (), {})())
+        self.module = module
+
+    def mock_function(self, *args, **kwargs):
+        return
+
+    def __getattr__(self, attr):
+        """returns attr of webbrowser module if Pythonista
+        """
+        try:
+            attr = getattr(self.module, attr)
+            return attr
+        except AttributeError:
+            return self.mock_function 
