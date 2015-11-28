@@ -1,4 +1,4 @@
-from pythonista_dropbox.platform_specific_tools import (
+from pythonista_dropbox.adapters import (
     Platform,
     PythonistaModuleAdapter
 )
