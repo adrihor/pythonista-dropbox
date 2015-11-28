@@ -4,17 +4,14 @@ try:
 except ImportError:
     pass
 
-import urllib
-import sys
-import json
-import dropbox
 from pythonista_dropbox.platform_specific_tools import ModuleObject
+import dropbox
+import json
+import sys
+import urllib
 
 webbrowser, clipboard  = [ModuleObject(module) for module 
                           in ('webbrowser', 'clipboard')]
-
-
-
 pwd = 'hx7wcgAYoreRt2ivJwYkznkqpzXR'
 APP_KEY = 'wslawux2b38q2j3'
 APP_SECRET = 'qb4yg62ea9hho70'
@@ -43,21 +40,31 @@ def get_authorize_url(session, request_token):
 
 
 def main():
-    session = get_session()
-    request_token = get_request_token(session)
-    url = get_authorize_url(session, request_token)
-    print("open this url:", url)
-    webbrowser.open(url)
-    clipboard.set(pwd)
-    raw_input()
-    access_token = session.obtain_access_token(request_token)
-    keys = ('key', 'secret',)
-    creds = dict(zip(keys, [getattr(access_token, attr) for attr in keys]))
-    creds = json.dumps(creds)
-    url = 'drafts4://x-callback/create?text={0}'.format(urllib.quote(creds))
-    webbrowser.open(url)
-    return 0
-
+    try:
+        session = get_session()
+        request_token = get_request_token(session)
+        url = get_authorize_url(session, request_token)
+        print("open this url:", url)
+        webbrowser.open(url)
+        clipboard.set(pwd)
+        raw_input()
+    except dropbox.rest.ErrorResponse as err: 
+        print(err.body)
+        raise dropbox.rest.ErrorResponse(err)
+    try:
+        access_token = session.obtain_access_token(request_token)
+        keys = ('key', 'secret',)
+        creds = dict(zip(keys, [getattr(access_token, attr) for attr in keys]))
+        creds = json.dumps(creds)
+        if not webbrowser.platform.pythonista:
+            print(creds)
+        else:    
+            url = 'drafts4://x-callback/create?text={0}'.format(urllib.quote(creds))
+            webbrowser.open(url)
+        return 0
+    except dropbox.rest.ErrorResponse as err: 
+        print(err.body)
+        raise dropbox.rest.ErrorResponse(err)
 
 if __name__ == "__main__":
     sys.exit(main())
