@@ -13,3 +13,12 @@ def test_keyring_keychain():
 
     assert keychain.keychain == keyring
     assert keychain.set_password == keyring.set_password
+
+
+def test_sensitive_info():
+    from pythonista_dropbox.request_auth_token import (
+        DROPBOX_PWD,
+        APP_KEY,
+        APP_SECRET
+    )
+    assert all([DROPBOX_PWD, APP_KEY, APP_SECRET])

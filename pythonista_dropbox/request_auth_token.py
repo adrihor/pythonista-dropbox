@@ -1,47 +1,40 @@
-try:
+try:  # fix insecure warning in urllib3
     import urllib3.contrib.pyopenssl
     urllib3.contrib.pyopenssl.inject_into_urllib3()
 except ImportError:
     pass
-from pythonista_dropbox.adapters import PythonistaModuleAdapter
-import dropbox
 import json
 import sys
 import urllib
 try:  # keychain on non-Pythonista is called keyring
     import keyring
 except ImportError:
-    keyring = None
+    import keychain as keyring
+import dropbox
+from pythonista_dropbox.adapters import PythonistaModuleAdapter
 
 modules = ('webbrowser', 'clipboard', 'keychain')
 webbrowser, clipboard, keychain = [PythonistaModuleAdapter(module) for module
                                    in modules]
-if keychain.platform.pythonista:
-    dropbox_dropbox_pwd = keychain.get_password('dropbox', 'dmmmd')
-    APP_KEY = keychain.get_password('dmmmd_sync', 'app_key')
-    APP_SECRET = keychain.get_password('dmmmd_sync', 'app_secret')
-else:
-    dropbox_pwd = ''
-    APP_KEY = ''
-    APP_SECRET = ''
-sensitive_info = (
-    ('dropbox password', dropbox_pwd, ),
-    ('dropbox app key', APP_KEY, ),
-    ('dropbox app secret', APP_SECRET, )
+keychain.keychain = keyring  # differing name for keyrin in Pythonista
+services = (
+    'dropbox',
+    'dmmmd sync',
+    'dmmmd sync',
+)
+accounts = (
+    'password',
+    'app key',
+    'app secret',
 )
 
 ACCESS_TYPE = 'dropbox'
+DROPBOX_PWD, APP_KEY, APP_SECRET = [keychain.get_password(service, account)
+                                    for service, account
+                                    in zip(services, accounts)]
 
 
 def get_session():
-    names, variables = zip(*sensitive_info)
-    if not all(variables):
-        values = []
-        for name, string in sensitive_info:
-            if not string:
-                values.append(raw_input("Please enter the {}: ".format(name)))
-        variables = values
-
     session = dropbox.session.DropboxSession(
         APP_KEY, APP_SECRET, ACCESS_TYPE)
     return session
@@ -67,28 +60,36 @@ def main():
         session = get_session()
         request_token = get_request_token(session)
         url = get_authorize_url(session, request_token)
+        clipboard.set(DROPBOX_PWD)  # for easy pasting into the HTML interface
         print("open this url:", url)
         webbrowser.open(url)
-        clipboard.set(dropbox_pwd)
         raw_input()
     except dropbox.rest.ErrorResponse as err:
         print(err.body)
-        raise dropbox.rest.ErrorResponse(err)
+        raise RuntimeError()
     try:
         access_token = session.obtain_access_token(request_token)
-        keys = ('key', 'secret',)
-        creds = dict(zip(keys, [getattr(access_token, attr) for attr in keys]))
-        creds = json.dumps(creds)
-        if not webbrowser.platform.pythonista:
-            print(creds)
-        else:
-            url = 'drafts4://x-callback/create?text={0}'.format(
-                urllib.quote(creds))
-            webbrowser.open(url)
+        access_token_keys = ('key', 'secret',)
+        app_accounts = [' '.join(('access token', access_token_key))
+                        for access_token_key in access_token_keys]
+        app_services = ('access token {0}', ) * 2
+        app_services = [_service.format(_service) for _service in services[1:]]
+        access_token = dict(zip(
+            access_token_keys,
+            [getattr(access_token, attr)
+             for attr in access_token_keys]))
+        for name, service, cred_key in zip(
+            app_services,
+            app_accounts,
+            access_token_keys
+        ):
+            keychain.set_password(name, service, access_token[cred_key])
+            print("The app {0} is in the keychain under ('{1}', '{2}')".
+                  format(cred_key, name, service))
         return 0
     except dropbox.rest.ErrorResponse as err:
         print(err.body)
-        raise dropbox.rest.ErrorResponse(err)
+        raise RuntimeError()
 
 if __name__ == "__main__":
     sys.exit(main())
