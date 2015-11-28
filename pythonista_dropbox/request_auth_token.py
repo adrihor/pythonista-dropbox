@@ -3,6 +3,7 @@ try:
     urllib3.contrib.pyopenssl.inject_into_urllib3()
 except ImportError:
     pass
+
 try:
     import clipboard
 except ImportError:

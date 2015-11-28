@@ -16,6 +16,31 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     # TODO: put package requirements here
+    'cffi==1.3.1',
+    'cryptography==1.1.1',
+    'decorator==4.0.4',
+    'dropbox==3.42,',
+    'enum34==1.0.4',
+    'idna==2.0',
+    'ipaddress==1.0.15',
+    'ipython==4.0.1',
+    'ipython-genutils==0.1.0',
+    'ndg-httpsclient==0.4.0',
+    'path.py==8.1.2',
+    'pexpect==4.0.1',
+    'pickleshare==0.5',
+    'ptyprocess==0.5',
+    'py==1.4.31',
+    'pyasn1==0.1.9',
+    'pycparser==2.14',
+    'pyOpenSSL==0.15.1',
+    'pytest==2.8.3',
+    'requests==2.8.1',
+    'simplegeneric==0.8.1',
+    'six==1.10.0',
+    'traitlets==4.0.0',
+    'urllib3==1.12',
+    'wheel==0.24.0',
 ]
 
 test_requirements = [
