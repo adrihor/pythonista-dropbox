@@ -3,9 +3,7 @@ try:  # fix insecure warning in urllib3
     urllib3.contrib.pyopenssl.inject_into_urllib3()
 except ImportError:
     pass
-import json
 import sys
-import urllib
 try:  # keychain on non-Pythonista is called keyring
     import keyring
 except ImportError:
