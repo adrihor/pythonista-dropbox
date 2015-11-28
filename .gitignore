@@ -45,4 +45,5 @@ docs/_build
 # Vim
 .ropeproject
 .ipynb_checkpoints
-.swp
+*.swp
+.cache
