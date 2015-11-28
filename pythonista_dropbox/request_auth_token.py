@@ -3,15 +3,19 @@ try:
     urllib3.contrib.pyopenssl.inject_into_urllib3()
 except ImportError:
     pass
-
 from pythonista_dropbox.adapters import PythonistaModuleAdapter
 import dropbox
 import json
 import sys
 import urllib
+try:  # keychain on non-Pythonista is called keyring
+    import keyring
+except ImportError:
+    keyring = None
 
+modules = ('webbrowser', 'clipboard', 'keychain')
 webbrowser, clipboard, keychain = [PythonistaModuleAdapter(module) for module
-                                   in ('webbrowser', 'clipboard', 'keychain')]
+                                   in modules]
 if keychain.platform.pythonista:
     dropbox_dropbox_pwd = keychain.get_password('dropbox', 'dmmmd')
     APP_KEY = keychain.get_password('dmmmd_sync', 'app_key')

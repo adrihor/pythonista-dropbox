@@ -37,6 +37,6 @@ class PythonistaModuleAdapter(object):
         the attr of the module is returned."""
         try:
             attrs = getattr(getattr(self, self.module), attr)
-            return attr
+            return attrs
         except AttributeError:
             return self.mock_function
