@@ -4,24 +4,43 @@ try:
 except ImportError:
     pass
 
-from pythonista_dropbox.platform_specific_tools import ModuleObject
+from pythonista_dropbox.adapters import PythonistaModuleAdapter
 import dropbox
 import json
 import sys
 import urllib
 
-webbrowser, clipboard  = [ModuleObject(module) for module 
-                          in ('webbrowser', 'clipboard')]
-pwd = 'hx7wcgAYoreRt2ivJwYkznkqpzXR'
-APP_KEY = 'wslawux2b38q2j3'
-APP_SECRET = 'qb4yg62ea9hho70'
+webbrowser, clipboard, keychain = [PythonistaModuleAdapter(module) for module
+                                   in ('webbrowser', 'clipboard', 'keychain')]
+if keychain.platform.pythonista:
+    dropbox_dropbox_pwd = keychain.get_password('dropbox', 'dmmmd')
+    APP_KEY = keychain.get_password('dmmmd_sync', 'app_key')
+    APP_SECRET = keychain.get_password('dmmmd_sync', 'app_secret')
+else:
+    dropbox_pwd = ''
+    APP_KEY = ''
+    APP_SECRET = ''
+sensitive_info = (
+    ('dropbox password', dropbox_pwd, ),
+    ('dropbox app key', APP_KEY, ),
+    ('dropbox app secret', APP_SECRET, )
+)
+
 ACCESS_TYPE = 'dropbox'
 
 
 def get_session():
-        session = dropbox.session.DropboxSession(
-            APP_KEY, APP_SECRET, ACCESS_TYPE)
-        return session
+    names, variables = zip(*sensitive_info)
+    if not all(variables):
+        values = []
+        for name, string in sensitive_info:
+            if not string:
+                values.append(raw_input("Please enter the {}: ".format(name)))
+        variables = values
+
+    session = dropbox.session.DropboxSession(
+        APP_KEY, APP_SECRET, ACCESS_TYPE)
+    return session
 
 
 def get_client(session):
@@ -46,9 +65,9 @@ def main():
         url = get_authorize_url(session, request_token)
         print("open this url:", url)
         webbrowser.open(url)
-        clipboard.set(pwd)
+        clipboard.set(dropbox_pwd)
         raw_input()
-    except dropbox.rest.ErrorResponse as err: 
+    except dropbox.rest.ErrorResponse as err:
         print(err.body)
         raise dropbox.rest.ErrorResponse(err)
     try:
@@ -58,11 +77,12 @@ def main():
         creds = json.dumps(creds)
         if not webbrowser.platform.pythonista:
             print(creds)
-        else:    
-            url = 'drafts4://x-callback/create?text={0}'.format(urllib.quote(creds))
+        else:
+            url = 'drafts4://x-callback/create?text={0}'.format(
+                urllib.quote(creds))
             webbrowser.open(url)
         return 0
-    except dropbox.rest.ErrorResponse as err: 
+    except dropbox.rest.ErrorResponse as err:
         print(err.body)
         raise dropbox.rest.ErrorResponse(err)
 
