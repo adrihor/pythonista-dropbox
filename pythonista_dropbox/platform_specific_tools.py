@@ -9,14 +9,12 @@ class Platform(object):
     interpreter."""
 
     def __init__(self):
-        """set pythonista to True if on iOS device"""
-        if "Darwin-15.0.0" in self.platform:
-            self.pythonista = True
-        else:
-            self.pythonista = False
+        """set pythonista to True if on iOS device
+        assume that platform.platform returns a string with Darwin-15.0.0 in it"""
+        self.pythonista = True if "Darwin-15.0.0" in self.platform else False
 
 
-class ModuleObject(object):
+class PythonistaModuleAdapter(object):
     platform = Platform()
 
     """substitute for Pythonisa-only modules to aid in Pythonista development
@@ -34,10 +32,11 @@ class ModuleObject(object):
         return
 
     def __getattr__(self, attr):
-        """returns attr of webbrowser module if Pythonista
-        """
+        """Returns attr of module 'module' if has attr or mock_function if not.
+        On non-Pythonista platform mock_function is returned. On Pythonista platform,
+        the attr of the module is returned."""
         try:
-			attrs = getattr(getattr(self, self.module), attr)
+            attrs = getattr(getattr(self, self.module), attr)
             return attr
         except AttributeError:
             return self.mock_function

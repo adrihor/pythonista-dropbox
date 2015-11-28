@@ -1,34 +1,45 @@
-import pytest
 from pythonista_dropbox.platform_specific_tools import (
     Platform,
-    ModuleObject
+    PythonistaModuleAdapter
 )
 
 
-
 def test_platform():
-    """test platform specific tools
-    """
-
+    """Test instance of Platform. """
     platform = Platform()
 
     assert platform.pythonista is False
 
 
 def test_modules():
-    """returns a mockfunction that returns None on call"""
+    """Test passing args and kwargs to a PythonistaModuleAdapter instance."""
     for module in ('webbrowser', 'clipboard'):
-        pythonista_module = ModuleObject(module)
+        pythonista_module = PythonistaModuleAdapter(module)
 
         url = "drafts4://x-callback/create?text={}"
-        result = pythonista_module.open(url)
-        
-        assert result is None
+        # example names of functions a module may have
+        module_functions = ('open', 'get', 'set')
+        arguments = (url, ) * 2
+        kwordarguments = ({'url': url}, )
+        for module_function in module_functions:
+            function = getattr(pythonista_module, module_function)
 
-        result = pythonista_module.open(url=url)
-        
-        assert result is None
+            results = [function(*arg) for arg in arguments]
+            assert not all(results)
 
-        result = pythonista_module.set(url)
+            results = [function(**kwargs) for kwargs in kwordarguments]
+            assert not all(results)
 
-        assert result is None
+
+def test_module_object_function_override():
+    """Test that if a the PythonistaModuleAdapter has an overridden function
+    that function returns as expected when called."""
+
+    def open(self, url):
+        return url
+
+    PythonistaModuleAdapter.open = open
+    webbrowser = PythonistaModuleAdapter('webbrowser')
+    url = 'drafts4://x-callback/create?text={}'
+
+    assert webbrowser.open(url) == url
