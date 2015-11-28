@@ -20,7 +20,7 @@ class ModuleObject(object):
     platform = Platform()
 
     """substitute for Pythonisa-only modules to aid in Pythonista development
-    on non-iOS platform"""
+    on non-iOS platform, instantiate and then can mock any function on the module"""
 
     def __init__(self, module):
         if self.platform.pythonista:

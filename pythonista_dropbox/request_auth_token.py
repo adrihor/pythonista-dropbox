@@ -4,17 +4,15 @@ try:
 except ImportError:
     pass
 
-try:
-    import clipboard
-except ImportError:
-    def set(string):
-        return string
-    clipboard = type('clipboard', (), {'set': set})
 import urllib
-import webbrowser
 import sys
 import json
 import dropbox
+from pythonista_dropbox.platform_specific_tools import ModuleObject
+
+webbrowser, clipboard  = [ModuleObject(module) for module 
+                          in ('webbrowser', 'clipboard')]
+
 
 
 pwd = 'hx7wcgAYoreRt2ivJwYkznkqpzXR'
@@ -48,6 +46,7 @@ def main():
     session = get_session()
     request_token = get_request_token(session)
     url = get_authorize_url(session, request_token)
+    print("open this url:", url)
     webbrowser.open(url)
     clipboard.set(pwd)
     raw_input()
