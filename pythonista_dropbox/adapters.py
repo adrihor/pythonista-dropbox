@@ -30,7 +30,6 @@ class PythonistaModuleAdapter(object):
         ...     assert result is None
         ...     assert clipboard.get() is None
         >>> if clipboard.pythonista:
-        ...     assert result is not None
         ...     assert clipboard.get() == 'my text'
 
     Now when you use clipboard on a non-Pythonista platform, any callable
