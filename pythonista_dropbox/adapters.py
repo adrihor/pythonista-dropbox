@@ -49,7 +49,7 @@ class PythonistaModuleAdapter(object):
             import keychain # Pythonista
 
         keychain = PythonistaModuleAdapter('keychain')
-        keychain.keychain = keyring"""
+        keychain.keychain = keychain"""
     pythonista = Platform().pythonista
 
     def __init__(self, module):
