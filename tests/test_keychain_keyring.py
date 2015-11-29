@@ -21,4 +21,4 @@ def test_sensitive_info():
         APP_KEY,
         APP_SECRET
     )
-    assert all([DROPBOX_PWD, APP_KEY, APP_SECRET])
+    assert not all([DROPBOX_PWD, APP_KEY, APP_SECRET])
