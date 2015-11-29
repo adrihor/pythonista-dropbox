@@ -5,7 +5,12 @@ import importlib
 class Platform(object):
     """The Platform class is used to test if the Pythonista app is the
     interpreter based on 'Darwin-15.0.0.' presence in platform.platform()
-    return value."""
+    return value.
+        >>> platform = Platform()
+        >>> platform =  platform.pythonista or not platform.pythonista
+        >>> platform is True
+        True
+    """
     platform = platform.platform()
 
     def __init__(self):
@@ -17,14 +22,26 @@ class PythonistaModuleAdapter(object):
     """Class PythonistaModuleAdapter substitutes for Pythonisa-only
     modules to aid in Pythonista development on non-iOS platforms.
     Example usage for clipboard:
-    DO NOT import the module clipboard.
+    **Do not** import the module clipboard. 
     Instead, do this:
-        clipboard = PythonistaModuleAdapter('clipboard')
+        >>> clipboard = PythonistaModuleAdapter('clipboard')
+        >>> result = clipboard.set('my text')
+        >>> if not clipboard.pythonista:
+        ...     assert result is None
+        ...     assert clipboard.get() is None
+        >>> if clipboard.pythonista:
+        ...     assert result is not None
+        ...     assert clipboard.get('my text') == 'my text'
+
     Now when you use clipboard on a non-Pythonista platform, any callable
     attribute of the equally named Pythonista module will accept all
     args and kwargs and return None.
+    A different function can be written and set on
+    the PythonistaModuleAdapter instance in a non-Pythonista environment.
+
     If the script is used in Pythonista, clipboard behaves exactly as if it
     were imported.
+
     To use in the case where the modules have differing names, do this:
         try:
             import keyring as keychain  # non-Pythonista
@@ -33,10 +50,10 @@ class PythonistaModuleAdapter(object):
 
         keychain = PythonistaModuleAdapter('keychain')
         keychain.keychain = keyring"""
-    platform = Platform()
+    pythonista = Platform().pythonista
 
     def __init__(self, module):
-        if self.platform.pythonista:
+        if self.pythonista:
             imported_module = importlib.import_module(module)
             setattr(self, module, imported_module)
         else:
@@ -56,3 +73,7 @@ class PythonistaModuleAdapter(object):
             return attrs
         except AttributeError:
             return self.mock_function
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
