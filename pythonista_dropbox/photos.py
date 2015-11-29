@@ -1,3 +1,4 @@
+import sys
 import os
 from pythonista_dropbox.adapters import PythonistaModuleAdapter
 
@@ -50,3 +51,18 @@ def get_image_names():
                  for _, meta_data in selected_photos]
     names, extensions = zip(*filenames)
     return names, extensions
+
+
+def main():
+    import json
+    import urllib
+    webbrowser = PythonistaModuleAdapter('webbrowser')
+    result = get_image_names()
+    result = json.dumps(result)
+    url = 'drafts4://x-callback/create?text={}'.format(
+        urllib.quote(result))
+    webbrowser.open(url)
+    return 0
+
+    if __name__ == "__main__":
+        sys.exit(main())
