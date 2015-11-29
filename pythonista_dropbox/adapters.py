@@ -22,7 +22,7 @@ class PythonistaModuleAdapter(object):
     """Class PythonistaModuleAdapter substitutes for Pythonisa-only
     modules to aid in Pythonista development on non-iOS platforms.
     Example usage for clipboard:
-    **Do not** import the module clipboard. 
+    **Do not** import the module clipboard.
     Instead, do this:
         >>> clipboard = PythonistaModuleAdapter('clipboard')
         >>> result = clipboard.set('my text')
@@ -31,7 +31,7 @@ class PythonistaModuleAdapter(object):
         ...     assert clipboard.get() is None
         >>> if clipboard.pythonista:
         ...     assert result is not None
-        ...     assert clipboard.get('my text') == 'my text'
+        ...     assert clipboard.get() == 'my text'
 
     Now when you use clipboard on a non-Pythonista platform, any callable
     attribute of the equally named Pythonista module will accept all
