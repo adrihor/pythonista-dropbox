@@ -62,6 +62,8 @@ def main():
     url = 'drafts4://x-callback/create?text={}'.format(
         urllib.quote(result))
     webbrowser.open(url)
+    if not photos.pythonista:
+        print(result)
     return 0
 
 if __name__ == "__main__":
