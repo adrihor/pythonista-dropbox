@@ -10,7 +10,7 @@ def test_access_key_and_secret_set():
     """
     access = [keychain.get_password(service, account)
               for service, account in keychain_key_words]
-    assert all(access)
+    assert all(access), "Run main in request_auth_token to set access."
 
 
 def test_client():
