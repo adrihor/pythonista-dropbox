@@ -426,8 +426,17 @@ def pypi_install(src_dict, print_progress=True):
                 build_dir = os.path.join(setup_dir, 'build/lib.linux-x86_64-2.7')
             build_dir_exists = os.path.exists(build_dir)
             if not build_dir_exists:
+                """If the same tar ball is installed again on iOS, the build_dir
+                does not exist."""
                 message = "The build directory does not exist: '{}'".format(
                     build_dir)
+                build_dir_dirname = os.path.dirname(build_dir)
+                for root, dirs, files in os.path.walk(build_dir_dirname):
+                    for file in files:
+                        print "*file: ", file
+                    for dir in dirs:
+                        print "*dir: ", dir
+
                 raise ValueError(message)
             if os.path.exists(build_dir):
                 # Get the files and directories in it
