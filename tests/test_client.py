@@ -1,5 +1,16 @@
 import os
-from pythonista_dropbox.client import get_client
+from pythonista_dropbox.client import get_client, keychain_key_words
+from pythonista_dropbox.client import keychain
+
+
+def test_access_key_and_secret_set():
+    """TODO: Docstring for test_access_key_and_secret_set.
+    :returns: TODO
+
+    """
+    access = [keychain.get_password(service, account)
+              for service, account in keychain_key_words]
+    assert all(access)
 
 
 def test_client():
