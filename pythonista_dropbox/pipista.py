@@ -1,9 +1,4 @@
 import os, os.path, sys, urllib2, requests, tempfile, zipfile, shutil, gzip, tarfile
-from pythonista_dropbox.client import get_client
-from pythonista_dropbox.adapters import Platform
-
-platform = Platform()
-
 
 __pypi_base__ = os.path.abspath(os.path.dirname(__file__))
 
@@ -58,17 +53,24 @@ def _chunk_read(response, chunk_size=32768, report_hook=None, filename=None):
     return (file_data, filename)
 
 def _download(src_dict, print_progress=True):
+    headers = {'User-Agent' : 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6;en-US; rv:1.9.2.9) Gecko/20100824 Firefox/3.6.9'}
     if print_progress:
         print '* Downloading:', src_dict['url']
-    client = get_client()
-    data = client.get_file(src_dict['url'])
-    filename = src_dict['filename']
-    if data:
+    req = urllib2.Request(src_dict['url'], headers=headers)
+    response = urllib2.urlopen(req)
+    output = src_dict['url'].split('/')[-1].split('#')[0].split('?')[0]
+    if print_progress:
+        data,filename = _chunk_read(response, report_hook=_chunk_report, filename=output)
+    else:
+        data,filename = _chunk_read(response, report_hook=None, filename=output)
+    if (len(data) > 0):
         if os.path.exists(filename):
             os.remove(filename)
         try:
-            with open(filename, 'wb') as fh:
-                fh.write(data.read())
+            f = open(filename, 'wb')
+            for x in data:
+                f.write(x)
+            f.close()
             if print_progress:
                 print '* Saved to:', filename
             return os.path.abspath(filename)
@@ -80,8 +82,23 @@ def _download(src_dict, print_progress=True):
         if print_progress:
             print '* Error: 0 bytes downloaded, not saved'
 
-def pypi_download(src_dict, print_progress=True):
-    return _download(src_dict, print_progress)
+def pypi_download(pkg_name, pkg_ver='', print_progress=True):
+    import xmlrpclib
+    pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+    hits = pypi.package_releases(pkg_name, True)
+    if not hits:
+        raise PyPiError('No package found with that name')
+    if not pkg_ver:
+        pkg_ver = hits[0]
+    elif not pkg_ver in hits:
+        raise PyPiError('That package version is not available')
+    hits = pypi.release_urls(pkg_name, pkg_ver)
+    if not hits:
+        raise PyPiError('No public download links for that version')
+    source = ([x for x in hits if x['packagetype'] == 'sdist'][:1] + [None])[0]
+    if not source:
+        raise PyPiError('No source-only download links for that version')
+    return _download(source, print_progress)
 
 def pypi_versions(pkg_name, limit=10, show_hidden=True):
     if not pkg_name:
@@ -342,10 +359,62 @@ def _rm(path=None):
             except Exception:
                 sys.exc_clear()
                 return
-if platform.pythonista:
-    """installs setuptools et al. on Pythonista platform""" 
-    from pipista import _prep_pipista
-    _prep_pipista()
+
+def _prep_pipista():
+    # This function does some prep work for pipista:
+    #  - Sets up the 'pypi-modules' directory if it doesn't exist
+    #  - Sets up '.tmp' in pypi-modules if it doesn't exist, for temp storage
+    #  - Adds 'pypi-modules' to the import paths
+    #  - Makes sure xmlrpclib is installed (fix for Pythonista 1.2)
+    #  - Makes sure the minimal setuptools is installed
+    # ----------
+    # Get pipista location as the relative base for module storage
+    lib_dir  = os.path.join(__pypi_base__, 'pypi-modules')
+    tmp_dir  = os.path.join(lib_dir, '.tmp')
+    if not os.path.exists(lib_dir):
+        try:
+            os.mkdir(lib_dir)
+        except Exception:
+            # Fail silently, if we can't make the directory
+            sys.exc_clear()
+    if not os.path.exists(tmp_dir):
+        try:
+            os.mkdir(tmp_dir)
+        except Exception:
+            # Fail silently, if we can't make the directory
+            sys.exc_clear()
+    # Make sure lib_dir exists before adding it to the paths
+    if os.path.exists(lib_dir):
+        if lib_dir not in sys.path:
+            sys.path += [lib_dir]
+    # Attempt to load xmlrpclib - not present in Pythonista 1.2
+    try:
+        import xmlrpclib
+    except ImportError:
+        # Doesn't seem to be available - attempt to download it
+        sys.exc_clear()
+        _install_xmlrpclib(lib_dir)
+        import xmlrpclib
+    # Attempt to load ConfigParser - not present in Pythonista 1.2
+    try:
+        import ConfigParser
+    except ImportError:
+        # Doesn't seem to be available - attempt to download it
+        sys.exc_clear()
+        _install_ConfigParser(lib_dir)
+        import xmlrpclib
+    try:
+        import distutils.util
+        def _fixed_get_platform():
+            return sys.platform
+        distutils.util.get_platform = _fixed_get_platform
+        import setuptools
+    except ImportError:
+        # Install a lite version of it - just enough for what we need
+        sys.exc_clear()
+        _install_setuptools(lib_dir)
+
+_prep_pipista()
 
 def _reset_and_enter_tmp(alt_dir=None):
     lib_dir  = os.path.join(__pypi_base__, 'pypi-modules')
@@ -380,7 +449,7 @@ def _py_build(path=None):
         sys.stdout = old_stdout
     return result
 
-def pypi_install(src_dict, print_progress=True):
+def pypi_install(pkg_name, pkg_ver='', print_progress=True):
     ## EXPERIMENTAL - not guaranteed to work! ##
     # Remeber where we were
     cwd = os.getcwd()
@@ -388,7 +457,7 @@ def pypi_install(src_dict, print_progress=True):
     _reset_and_enter_tmp()
     # Download the specified package to the archive directory
     os.chdir('archive')
-    fn = pypi_download(src_dict, print_progress)
+    fn = pypi_download(pkg_name, pkg_ver, print_progress)
     if not fn:
         _reset_and_enter_tmp(cwd)
         return False
@@ -420,15 +489,7 @@ def pypi_install(src_dict, print_progress=True):
         result = _py_build(setup_dir)
         if result:
             # Should be contents inside setup_dir/build/lib - merge them into pypi-modules
-            if not platform.pythonista:
-                build_dir = os.path.join(setup_dir, 'build/lib.linux2-2.7')
-            else:
-                build_dir = os.path.join(setup_dir, 'build/lib')
-            build_dir_exists = os.path.exists(build_dir)
-            if not build_dir_exists:
-                message = "The build directory does not exist: '{}'".format(
-                    message)
-                raise ValueError(message)
+            build_dir = os.path.join(setup_dir, 'build/lib')
             if os.path.exists(build_dir):
                 # Get the files and directories in it
                 os.chdir(build_dir)
@@ -446,7 +507,6 @@ def pypi_install(src_dict, print_progress=True):
                     if os.path.exists(target):
                         _rm(target)
                     shutil.copytree(a_dir, target)
-
         _reset_and_enter_tmp(cwd)
         return True
     else:

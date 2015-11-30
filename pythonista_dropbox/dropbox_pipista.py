@@ -345,61 +345,9 @@ def _rm(path=None):
                 sys.exc_clear()
                 return
 
-def _prep_pipista():
-    # This function does some prep work for pipista:
-    #  - Sets up the 'pypi-modules' directory if it doesn't exist
-    #  - Sets up '.tmp' in pypi-modules if it doesn't exist, for temp storage
-    #  - Adds 'pypi-modules' to the import paths
-    #  - Makes sure xmlrpclib is installed (fix for Pythonista 1.2)
-    #  - Makes sure the minimal setuptools is installed
-    # ----------
-    # Get pipista location as the relative base for module storage
-    lib_dir  = os.path.join(__pypi_base__, 'pypi-modules')
-    tmp_dir  = os.path.join(lib_dir, '.tmp')
-    if not os.path.exists(lib_dir):
-        try:
-            os.mkdir(lib_dir)
-        except Exception:
-            # Fail silently, if we can't make the directory
-            sys.exc_clear()
-    if not os.path.exists(tmp_dir):
-        try:
-            os.mkdir(tmp_dir)
-        except Exception:
-            # Fail silently, if we can't make the directory
-            sys.exc_clear()
-    # Make sure lib_dir exists before adding it to the paths
-    if os.path.exists(lib_dir):
-        if lib_dir not in sys.path:
-            sys.path += [lib_dir]
-    # Attempt to load xmlrpclib - not present in Pythonista 1.2
-    try:
-        import xmlrpclib
-    except ImportError:
-        # Doesn't seem to be available - attempt to download it
-        sys.exc_clear()
-        _install_xmlrpclib(lib_dir)
-        import xmlrpclib
-    # Attempt to load ConfigParser - not present in Pythonista 1.2
-    try:
-        import ConfigParser
-    except ImportError:
-        # Doesn't seem to be available - attempt to download it
-        sys.exc_clear()
-        _install_ConfigParser(lib_dir)
-        import xmlrpclib
-    try:
-        import distutils.util
-        def _fixed_get_platform():
-            return sys.platform
-        distutils.util.get_platform = _fixed_get_platform
-        import setuptools
-    except ImportError:
-        # Install a lite version of it - just enough for what we need
-        sys.exc_clear()
-        _install_setuptools(lib_dir)
-
-_prep_pipista()
+if platform.pythonista:
+    import pipista
+    pipista._prep_pipista()
 
 def _reset_and_enter_tmp(alt_dir=None):
     lib_dir  = os.path.join(__pypi_base__, 'pypi-modules')
