@@ -54,6 +54,10 @@ def get_authorize_url(session, request_token):
 
 
 def main():
+    """This function stores an access key and access token in the keyring.
+    This function has to be run prior to getting a client in client.py
+    module where the access_key and access_token are converted to
+    OAuth 2 version"""
     try:
         session = get_session()
         request_token = get_request_token(session)
