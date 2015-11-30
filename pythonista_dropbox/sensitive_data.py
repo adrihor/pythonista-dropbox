@@ -5,14 +5,15 @@ except ImportError:
     import keychain as keyring
 import sys
 
+keychain = PythonistaModuleAdapter('keychain')
+keychain.keychain = keyring
+
 
 def set(services, accounts):
     """TODO: Docstring for main.
     :returns: TODO
 
     """
-    keychain = PythonistaModuleAdapter('keychain')
-    keychain.keychain = keyring
     for service, account in zip(services, accounts):
         value = raw_input(
             "Enter the info for {0}:{1}: ".format(service, account))
