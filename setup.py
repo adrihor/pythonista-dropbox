@@ -35,6 +35,7 @@ setup(
     url='https://github.com/dmorehousemd/pythonista_dropbox',
     packages=[
         'pythonista_dropbox',
+        'pythonista_dropbox/pythonista_modules',
     ],
     package_dir={'pythonista_dropbox':
                  'pythonista_dropbox'},
