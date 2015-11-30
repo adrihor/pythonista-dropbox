@@ -26,3 +26,13 @@ def test_install():
     is_true = result is True
 
     assert is_true
+
+
+def main():
+    pipista.pypi_install(source_dict)
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())
