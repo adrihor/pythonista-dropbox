@@ -67,10 +67,8 @@ def _download(src_dict, print_progress=True):
         if os.path.exists(filename):
             os.remove(filename)
         try:
-            f = open(filename, 'wb')
-            for x in data:
-                f.write(x)
-            f.close()
+            with open(filename, 'wb') as f:
+                f.write(data.read()) 
             if print_progress:
                 print '* Saved to:', filename
             return os.path.abspath(filename)
@@ -422,14 +420,14 @@ def pypi_install(src_dict, print_progress=True):
         result = _py_build(setup_dir)
         if result:
             # Should be contents inside setup_dir/build/lib - merge them into pypi-modules
-            if not platform.pythonista:
-                build_dir = os.path.join(setup_dir, 'build/lib.linux2-2.7')
-            else:
+            if platform.pythonista:
                 build_dir = os.path.join(setup_dir, 'build/lib')
+            else:
+                build_dir = os.path.join(setup_dir, 'build/lib.linux-x86_64-2.7')
             build_dir_exists = os.path.exists(build_dir)
             if not build_dir_exists:
                 message = "The build directory does not exist: '{}'".format(
-                    message)
+                    build_dir)
                 raise ValueError(message)
             if os.path.exists(build_dir):
                 # Get the files and directories in it
