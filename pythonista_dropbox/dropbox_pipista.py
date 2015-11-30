@@ -430,14 +430,9 @@ def pypi_install(src_dict, print_progress=True):
                 does not exist."""
                 message = "The build directory does not exist: '{}'".format(
                     build_dir)
-                build_dir_dirname = os.path.dirname(build_dir)
-                for root, dirs, files in os.walk(build_dir_dirname):
-                    for file in files:
-                        print "*file: ", file
-                    for dir in dirs:
-                        print "*dir: ", dir
-
-                raise ValueError(message)
+                build = os.path.join(setup_dir, 'build') 
+                listing = os.listdir(build)
+                raise ValueError('\n'.join((message, '\n'.join(listing))))
             if os.path.exists(build_dir):
                 # Get the files and directories in it
                 os.chdir(build_dir)
