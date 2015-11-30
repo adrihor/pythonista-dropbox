@@ -24,6 +24,14 @@ test_requirements = [
     # TODO: put package test requirements here
     'pytest',
 ]
+format_kwargs = {
+    'run_command': 'request-auth-token',
+    'app_directory': 'pythonista_dropbox.request_auth_token',
+}
+entry_points = {
+    'console_scripts': ['{run_command} = {app_directory}:main'.
+                        format(**format_kwargs)]
+}
 
 setup(
     name='pythonista_dropbox',
@@ -54,5 +62,6 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    entry_points=entry_points
 )
