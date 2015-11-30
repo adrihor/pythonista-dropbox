@@ -1,5 +1,5 @@
-from pythonista_dropbox.photos import photos
-from pythonista_dropbox import photos as photo_module
+from pythonista_dropbox.pythonista_modules.photos import photos
+from pythonista_dropbox.pythonista_modules import photos as photo_module
 
 kwargs = dict(
     show_albums=True,
