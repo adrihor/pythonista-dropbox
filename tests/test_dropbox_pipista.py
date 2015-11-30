@@ -1,5 +1,10 @@
 import os
-from pythonista_dropbox import dropbox_pipista
+from pythonista_dropbox.adapters import Platform
+platform = Platform()
+if platform.pythonista:
+    import dropbox_pipista  # because this is ../site-packages in Pythonista
+else:
+    from pythonista_dropbox import dropbox_pipista
 
 
 filename = 'hello_world-0.1.0.tar.gz'
@@ -29,7 +34,7 @@ def test_install():
 
 
 def main():
-    pipista.pypi_install(source_dict)
+    dropbox_pipista.pypi_install(source_dict)
     return 0
 
 
