@@ -23,6 +23,7 @@ requirements = [
 test_requirements = [
     # TODO: put package test requirements here
     'pytest',
+    'coverage',
 ]
 keys = ('run_command', 'app_directory')
 commands = (
