@@ -22,4 +22,8 @@ def test_sensitive_info():
         APP_SECRET
     )
     assert all([DROPBOX_PWD, APP_KEY, APP_SECRET]), \
-        "Run the set_keyring.py script in private_scritps folder"
+        ' '.join((
+            "Run the set_keyring.py script",
+            "in client_scripts module or",
+            "type 'set-keyring' at the command line.",
+        ))

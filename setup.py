@@ -44,6 +44,7 @@ setup(
     packages=[
         'pythonista_dropbox',
         'pythonista_dropbox/pythonista_modules',
+        'pythonista_dropbox/client_scripts',
     ],
     package_dir={'pythonista_dropbox':
                  'pythonista_dropbox'},
