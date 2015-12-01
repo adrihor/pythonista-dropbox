@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Don M. Morehouse <dmmmdfll@gmail.com>
+* Don M <dmmmdfll@gmail.com>
 
 Contributors
 ------------
