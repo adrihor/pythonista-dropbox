@@ -15,12 +15,12 @@ modules = ('webbrowser', 'clipboard', 'keychain')
 webbrowser, clipboard, keychain = [PythonistaModuleAdapter(module) for module
                                    in modules]
 keychain.keychain = keyring  # differing name for keyrin in Pythonista
-services = (
+services = ( # keychain args
     'dropbox',
-    'dmmmd sync',
-    'dmmmd sync',
+    'default app',
+    'default app',
 )
-accounts = (
+accounts = (  # keychain args
     'password',
     'app key',
     'app secret',
@@ -54,15 +54,17 @@ def get_authorize_url(session, request_token):
 
 
 def main():
-    """This function stores an access key and access token in the keyring.
-    This function has to be run prior to getting a client in client.py
-    module where the access_key and access_token are converted to
-    OAuth 2 version"""
+    """This main stores an access key and access token in the keyring
+    using the arguments in services and accounts.
+    This function has to be run prior to getting a client in client.py.
+    """
     try:
         session = get_session()
         request_token = get_request_token(session)
         url = get_authorize_url(session, request_token)
-        clipboard.set(DROPBOX_PWD)  # for easy pasting into the HTML interface
+        # For easy pasting into web browser interface
+        # in Pythonista, optional. It may be typed manually.
+        clipboard.set(DROPBOX_PWD)
         print("open this url:", url)
         webbrowser.open(url)
         raw_input()
