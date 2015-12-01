@@ -11,15 +11,15 @@ is the name only, e.g.:
     }
 
 """
+import gzip
 import os
 import os.path
-import sys
-import urllib2
-import tempfile
-import zipfile
 import shutil
-import gzip
+import sys
 import tarfile
+import tempfile
+import urllib2
+import zipfile
 from pythonista_dropbox.client import get_client
 from pythonista_dropbox.adapters import Platform
 
