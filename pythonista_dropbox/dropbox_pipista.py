@@ -1,17 +1,25 @@
 """
 This code was cloned from https://gist.github.com/pudquick/4116558
 and then modified. Instead of downloading files from the
-Cheese Shop, it downloads files from Dropbox.
+Cheese Shop, it downloads files from Dropbox account.
 pypi_download accepts a dictionary with keys 'url', 'filename'
 where 'url' is the complete path to an installable file and 'filename'
 is the name only, e.g.:
     source_dict = {
-        'url': '/PyPi-tarballs/hello_world-0.1.0.tar.gz', 
+        'url': '/PyPi-tarballs/hello_world-0.1.0.tar.gz',
         'filename': 'hello_world-0.1.0.tar.gz',
     }
 
 """
-import os, os.path, sys, urllib2, requests, tempfile, zipfile, shutil, gzip, tarfile
+import os
+import os.path
+import sys
+import urllib2
+import tempfile
+import zipfile
+import shutil
+import gzip
+import tarfile
 from pythonista_dropbox.client import get_client
 from pythonista_dropbox.adapters import Platform
 
@@ -20,25 +28,30 @@ platform = Platform()
 
 __pypi_base__ = os.path.abspath(os.path.dirname(__file__))
 
+
 class PyPiError(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
+
 def _chunk_report(bytes_so_far, chunk_size, total_size):
-    if (total_size != None):
+    if (total_size is not None):
         percent = float(bytes_so_far) / total_size
         percent = round(percent*100, 2)
-        print 'Downloaded %d of %d bytes (%0.2f%%)' % (bytes_so_far, total_size, percent)
+        print 'Downloaded %d of %d bytes (%0.2f%%)' \
+            % (bytes_so_far, total_size, percent)
         if bytes_so_far >= total_size:
             print ''
     else:
         print 'Downloaded %d bytes' % (bytes_so_far)
 
+
 def _chunk_read(response, chunk_size=32768, report_hook=None, filename=None):
     file_data = []
-    if response.info().has_key('Content-Length'):
+    if 'Content-Length' in response.info():
         total_size = response.info().getheader('Content-Length').strip()
         total_size = int(total_size)
     else:
@@ -46,16 +59,17 @@ def _chunk_read(response, chunk_size=32768, report_hook=None, filename=None):
         total_size = None
         if report_hook:
             print '* Warning: No total file size available.'
-    if (filename == None) and (response.info().has_key('Content-Disposition')):
+    if (filename is None) and (response.info().has_key('Content-Disposition')):
         # If the response has Content-Disposition, we take file name from it
         try:
-            filename = response.info()['Content-Disposition'].split('filename=')[1]
+            filename = response.info()['Content-Disposition'].\
+                split('filename=')[1]
             if filename[0] == '"' or filename[0] == "'":
                 filename = filename[1:-1]
         except Exception:
             sys.exc_clear()
             filename = 'output'
-    if (filename == None):
+    if (filename is None):
         if report_hook:
             print "* No detected filename, using 'output'"
         filename = 'output'
@@ -70,6 +84,7 @@ def _chunk_read(response, chunk_size=32768, report_hook=None, filename=None):
         report_hook(bytes_so_far, chunk_size, total_size)
     return (file_data, filename)
 
+
 def _download(src_dict, print_progress=True):
     if print_progress:
         print '* Downloading:', src_dict['url']
@@ -81,7 +96,7 @@ def _download(src_dict, print_progress=True):
             os.remove(filename)
         try:
             with open(filename, 'wb') as f:
-                f.write(data.read()) 
+                f.write(data.read())
             if print_progress:
                 print '* Saved to:', filename
             return os.path.abspath(filename)
@@ -93,45 +108,10 @@ def _download(src_dict, print_progress=True):
         if print_progress:
             print '* Error: 0 bytes downloaded, not saved'
 
+
 def pypi_download(src_dict, print_progress=True):
     return _download(src_dict, print_progress)
 
-def pypi_versions(pkg_name, limit=10, show_hidden=True):
-    if not pkg_name:
-        return []
-    pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
-    hits = pypi.package_releases(pkg_name, show_hidden)
-    if not hits:
-        return []
-    if len(hits) > limit:
-        hits = hits[:limit]
-    return hits
-
-def pypi_search(search_str, limit=5):
-    if not search_str:
-        return []
-    pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
-    hits = pypi.search({'name': search_str}, 'and')
-    if not hits:
-        return []
-    hits = sorted(hits, key=lambda pkg: pkg['_pypi_ordering'], reverse=True)
-    if len(hits) > limit:
-        hits = hits[:limit]
-    return hits
-
-def _install_ConfigParser(path='.'):
-    # Grab the 2.7.3 version of ConfigParser - even though Pythonista 1.2 is 2.7.0
-    r = requests.get('http://hg.python.org/cpython/raw-file/70274d53c1dd/Lib/ConfigParser.py')
-    lib_file = os.path.join(path, 'ConfigParser.py')
-    with open(lib_file, 'w') as f:
-        f.write(r.text)
-
-def _install_xmlrpclib(path='.'):
-    # Grab the 2.7.3 version of xmlrpclib - even though Pythonista 1.2 is 2.7.0
-    r = requests.get('http://hg.python.org/cpython/raw-file/70274d53c1dd/Lib/xmlrpclib.py')
-    lib_file = os.path.join(path, 'xmlrpclib.py')
-    with open(lib_file, 'w') as f:
-        f.write(r.text)
 
 def _unzip(a_zip=None, path='.'):
     if a_zip is None:
@@ -162,9 +142,11 @@ def _unzip(a_zip=None, path='.'):
         try:
             zipf = zipfile.ZipFile(zipfp)
             # check for a leading directory common to all files and remove it
-            dirnames = [os.path.join(os.path.dirname(x), '') for x in zipf.namelist()]
+            dirnames = [os.path.join(os.path.dirname(x), '')
+                        for x in zipf.namelist()]
             common_dir = os.path.commonprefix(dirnames or ['/'])
-            # Check to make sure there aren't 2 or more sub directories with the same prefix
+            # Check to make sure there aren't 2 or more 
+            # sub directories with the same prefix
             if not common_dir.endswith('/'):
                 common_dir = os.path.join(os.path.dirname(common_dir), '')
             for name in zipf.namelist():
@@ -197,6 +179,7 @@ def _unzip(a_zip=None, path='.'):
         zipfp.close()
         return os.path.abspath(location)
 
+
 def _ungzip(a_gz=None, path='.'):
     fname = 'ungzip'
     if a_gz is None:
@@ -214,7 +197,8 @@ def _ungzip(a_gz=None, path='.'):
         finally:
             f.close()
         if gz_check != '\x1f\x8b\x08':
-            print "%s: %s: does not appear to be a gzip file" % (fname,a_gz)
+            print "%s: %s: does not appear to be a gzip file" % \
+                (fname, a_gz)
             return
         else:
             if (os.path.basename(filename).lower().endswith('.gz') or os.path.basename(filename).lower().endswith('.gzip')):
