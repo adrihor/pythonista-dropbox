@@ -24,15 +24,18 @@ test_requirements = [
     # TODO: put package test requirements here
     'pytest',
 ]
+keys = ('run_command', 'app_directory')
+commands = (
+    'request-auth-token',
+    'set-keychain',
+)
+app_directories = (
+    'pythonista_dropbox.request_auth_token',
+    'pythonista_dropbox.client_scripts.set_keychain',
+)
 format_kwargs = [
-    {
-        'run_command': 'request-auth-token',
-        'app_directory': 'pythonista_dropbox.request_auth_token',
-    },
-    {
-        'run_command': 'set-keychain',
-        'app_directory': 'pythonista_dropbox.client_scripts.set_keychain',
-    }
+    dict(zip(keys, (command, app_directory)))
+    for command, app_directory in zip(commands, app_directories)
 ]
 entry_points = {
     'console_scripts': ['{run_command} = {app_directory}:main'.

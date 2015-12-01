@@ -5,9 +5,10 @@ from pythonista_dropbox.request_auth_token import (
 )
 
 keychain_key_words = (
-    ('dmmmd sync', 'access token key', ),
-    ('dmmmd sync', 'access token secret', ),
+    ('default app', 'access token key', ),
+    ('default app', 'access token secret', ),
 )
+
 ACCESS = ACCESS_KEY, ACCESS_SECRET = [keychain.get_password(service, account)
                                       for service, account
                                       in keychain_key_words]

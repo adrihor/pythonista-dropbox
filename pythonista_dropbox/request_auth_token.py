@@ -70,7 +70,12 @@ def main():
         raw_input()
     except dropbox.rest.ErrorResponse as err:
         print(err.body)
-        raise RuntimeError()
+        message = \
+            ' '.join((
+                "Verify that your app access token is set on the keychain.",
+                "Try running 'set-keychain' at the command line.",
+                ))
+        raise RuntimeError(message)
     try:
         access_token = session.obtain_access_token(request_token)
         access_token_keys = ('key', 'secret',)
