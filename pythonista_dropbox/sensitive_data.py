@@ -10,10 +10,7 @@ keychain.keychain = keyring
 
 
 def set(services, accounts):
-    """TODO: Docstring for main.
-    :returns: TODO
-
-    """
+    """set the keychain passwords with user input"""
     for service, account in zip(services, accounts):
         value = raw_input(
             "Enter the info for {0}:{1}: ".format(service, account))

@@ -1,3 +1,4 @@
+"""cloned from https://gist.github.com/pudquick/4116558"""
 import os, os.path, sys, urllib2, requests, tempfile, zipfile, shutil, gzip, tarfile
 
 __pypi_base__ = os.path.abspath(os.path.dirname(__file__))

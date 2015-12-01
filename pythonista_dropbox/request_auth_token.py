@@ -11,11 +11,12 @@ except ImportError:
 import dropbox
 from pythonista_dropbox.adapters import PythonistaModuleAdapter
 
+# mock the Pythonista modules
 modules = ('webbrowser', 'clipboard', 'keychain')
 webbrowser, clipboard, keychain = [PythonistaModuleAdapter(module) for module
                                    in modules]
 keychain.keychain = keyring  # differing name for keyrin in Pythonista
-services = ( # keychain args
+services = (  # keychain args
     'dropbox',
     'default app',
     'default app',
