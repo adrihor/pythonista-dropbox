@@ -1,3 +1,16 @@
+"""
+This code was cloned from https://gist.github.com/pudquick/4116558
+and then modified. Instead of downloading files from the
+Cheese Shop, it downloads files from Dropbox.
+pypi_download accepts a dictionary with keys 'url', 'filename'
+where 'url' is the complete path to an installable file and 'filename'
+is the name only, e.g.:
+    source_dict = {
+        'url': '/PyPi-tarballs/hello_world-0.1.0.tar.gz', 
+        'filename': 'hello_world-0.1.0.tar.gz',
+    }
+
+"""
 import os, os.path, sys, urllib2, requests, tempfile, zipfile, shutil, gzip, tarfile
 from pythonista_dropbox.client import get_client
 from pythonista_dropbox.adapters import Platform
@@ -427,12 +440,10 @@ def pypi_install(src_dict, print_progress=True):
             build_dir_exists = os.path.exists(build_dir)
             if not build_dir_exists:
                 """If the same tar ball is installed again on iOS, the build_dir
-                does not exist."""
+                does not exist. Restarting Pythonista resolves the problem."""
                 message = "The build directory does not exist: '{}'".format(
                     build_dir)
-                build = os.path.join(setup_dir, 'build') 
-                listing = os.listdir(build)
-                raise ValueError('\n'.join((message, '\n'.join(listing))))
+                raise ValueError(message)
             if os.path.exists(build_dir):
                 # Get the files and directories in it
                 os.chdir(build_dir)
