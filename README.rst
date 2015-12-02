@@ -14,8 +14,8 @@ Sometimes it is not convenient to develop Python scripts on an iOS device due to
 
 This package started with the following goals in mind:
 
-1. Develop on a non-iOS device and produce Python code that did not have to be altered in any way to run on Pythonista.
-1. Programatically install the Python code to Pythonista without having to copy and paste except to install the installer.
+* Develop on a non-iOS device and produce Python code that did not have to be altered in any way to run on Pythonista.
+* Programatically install the Python code to Pythonista without having to copy and paste except to install the installer.
 
 The adapter.PythonModuleAdapter has accomplished so far the first goal. See the doc string in pythonista_dropbox.adapter. Modules that don't exist on a non-iOS platform can be mocked with this class.
 
@@ -66,16 +66,16 @@ Pythonista "install"
 ____________________
 
 
-1. Inside of the `site-packages` directory create a directory named `pythonista_dropbox`
-1. Inside of the `site-pacages` directory create scripts with the following names and paste the contents from the scripts with the same name from this package:
+* Inside of the `site-packages` directory create a directory named `pythonista_dropbox`
+* Inside of the `site-pacages` directory create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
     * pipista.py
     * dropbox_pipista.py
 
 Open and run the `pipista.py` script to install the setuptools package.
 
-1. Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
-1. Create scripts with the following names and paste the contents from the scripts with the same name from this package:
+* Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
+* Create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
         * adapters.py
         * sensitive_data.py
@@ -85,8 +85,8 @@ Open and run the `pipista.py` script to install the setuptools package.
 
 Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
-    1. set_keychain.py
-    1. set_access_key_and_secret.py
+    * set_keychain.py
+    * set_access_key_and_secret.py
 
 
 You may now install sdist packages from Dropbox or the PyPi cheese shop.
@@ -101,3 +101,4 @@ Features
 * Includes a class called PythonistaModuleAdapter that create Pythonista module mockups for developing Python on a desktop computer that then functions in Pythonista in iOS without further modifications.
 * Download and install a source distribution into Pythonista from a Dropbox account.
 * Download and install pure Python modules from the cheese shop using pipista.py
+
