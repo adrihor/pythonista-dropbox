@@ -5,6 +5,11 @@ from pythonista_dropbox.adapters import PythonistaModuleAdapter
 photos = PythonistaModuleAdapter('photos')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 mock_photo = os.path.join(BASE_DIR, 'mock_photo')
+<<<<<<< HEAD
+=======
+photo_meta_data = os.path.join(mock_photo, 'exifs')
+images_dir = os.path.join(mock_photo, 'images')
+>>>>>>> dev/v0.1.0/pythonista-modules
 
 
 kwargs = dict(
@@ -28,6 +33,7 @@ def pick_image(
     import json
     from StringIO import StringIO
 
+<<<<<<< HEAD
     with open(os.path.join(mock_photo, 'photo_dict.json'), 'r') as fh:
         photo_meta_data = json.load(fh)
     with open(os.path.join(mock_photo, 'IMG_3008.jpeg'), 'r') as fh:
@@ -37,6 +43,29 @@ def pick_image(
         return ((binary_image, photo_meta_data), )
     else:
         return ((type('JPEGImage', (), {})(), photo_meta_data), )
+=======
+    exifs = []
+    _, _, files = os.walk(photo_meta_data).next()
+    for file in files:
+        with open(os.path.join(photo_meta_data, file), 'r') as fh:
+            exifs.append(json.load(fh))
+    images = []
+    _, _, files = os.walk(images_dir).next()
+    for file in files:
+        with open(os.path.join(images_dir, file), 'r') as fh:
+            binary_image = StringIO(fh.read())
+            binary_image.seek(0)
+            images.append(binary_image)
+    if kwargs['raw_data']:
+        """mocked photos and mocked meta_data like that returned 
+        in Pythonista photos.pick_image"""
+        return ((binary_image, photo_meta_data)
+                for binary_image, photo_meta_data
+                in zip(images, exifs))
+    else:
+        return ((type('JPEGImage', (), {})(), photo_meta_data)
+                for photo_meta_data in exifs)
+>>>>>>> dev/v0.1.0/pythonista-modules
 
 if not photos.pythonista:
     photos.pick_image = pick_image
