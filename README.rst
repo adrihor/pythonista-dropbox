@@ -6,6 +6,7 @@ Pythonista Dropbox
 
 * Free software: ISC license
 
+
 Non-Pythonista Install
 ______________________ 
 
@@ -19,6 +20,81 @@ This package started with the following goals in mind:
 The adapter.PythonModuleAdapter has accomplished so far the first goal. See the doc string in pythonista_dropbox.adapter. Modules that don't exist on a non-iOS platform can be mocked with this class.
 
 The second goal is accomplished with some altering the gist at .. _pipista https://gist.github.com/pudquick/4116558 The pipista module is included in this package. Its altered dropbox counterpart is called dropbox_pipista.py. The dropbox_pipista.py module downloads sdist files from a given Dropbox path.
+
+After an install, the following two commands are available at the command line:
+
+* `set-keychain`
+
+  This command will ask for and set 3 items onto the keyring or keychain:
+
+        + Dropbox account password. 
+          
+        It is not necessary and is used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
+
+        + Dropbox application key
+        + Dropbox application secret
+
+
+  * `request-auth-token`
+
+  Using the data set after running `set-keychain`, this will take the user through the process of obtaining an authorization token from Dropbox and setting the access token key and secret onto the keyring or keychain. 
+
+  On a desktop, url may be copied and pasted into a browser. On an iOS device, Pythonista's web browser is opened with the generated authorization url.
+
+  On an iOS device the following two scripts may be run to accomplish the same task.
+
+  client_scripts
+  ├── set_access_key_and_secret.py
+  ├── set_keychain.py
+
+
+  After setting up the keychain with credentials, a client used for accessing a Dropbox account may be used as follows:
+
+  ::
+
+        from pythonista_dropbox.client import get_client
+
+        client = get_client()
+        print client.account_info()
+        metadata = client.metadata('/Public')
+        print metadata
+
+
+See tests/test_dropbox_pipista.py for an example of how a sdist tarball may be installed from a tarball file stored in a Dropbox directory.
+
+
+Pythonista "install"
+____________________
+
+
+1. Inside of the `site-packages` directory create a directory named `pythonista_dropbox`
+1. Inside of the `site-pacages` directory create scripts with the following names and paste the contents from the scripts with the same name from this package:
+
+    * pipista.py
+    * dropbox_pipista.py
+
+Open and run the `pipista.py` script to install the setuptools package.
+
+1. Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
+   1. Create scripts with the following names and paste the contents from the scripts with the same name from this package:
+
+        * adapters.py
+        * sensitive_data.py
+        * request_auth_token.py
+        * client.py
+        * __init__.py  (No need to put any contents into this one.)
+
+Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
+
+        1. set_keychain.py
+        1. set_access_key_and_secret.py
+
+
+You may now install sdist packages from Dropbox or the PyPi cheese shop.
+
+See the example in tests/test_dropbox_pipista.py
+
+
 
 Features
 --------
