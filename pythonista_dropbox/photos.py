@@ -43,6 +43,8 @@ def pick_image(
             binary_image.seek(0)
             images.append(binary_image)
     if kwargs['raw_data']:
+        """mocked photos and mocked meta_data like that returned 
+        in Pythonista photos.pick_image"""
         return ((binary_image, photo_meta_data)
                 for binary_image, photo_meta_data
                 in zip(images, exifs))
