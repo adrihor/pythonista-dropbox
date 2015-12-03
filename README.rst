@@ -30,8 +30,7 @@ After an install, the following two commands are available at the command line:
 
   + Dropbox account password. 
           
-It is not necessary and is used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
-
+    It is not necessary and is used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
   + Dropbox application key
   + Dropbox application secret
 
