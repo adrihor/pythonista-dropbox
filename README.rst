@@ -30,7 +30,7 @@ After an install, the following two commands are available at the command line:
 
   + Dropbox account password. 
           
-        It is not necessary and is used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
+It is not necessary and is used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
 
   + Dropbox application key
   + Dropbox application secret
@@ -38,11 +38,12 @@ After an install, the following two commands are available at the command line:
 
 Using the authorization data that has been set after running `set-keychain`, this will take the user through the process of obtaining an authorization token from Dropbox and setting the access token key and secret onto the keyring or keychain. 
 
-  On a desktop, url may be copied and pasted into a browser. On an iOS device, Pythonista's web browser is opened with the generated authorization url.
+On a desktop, url may be copied and pasted into a browser. On an iOS device, Pythonista's web browser is opened with the generated authorization url.
 
-  On an iOS device the following two scripts may be run to accomplish the same task.
+On an iOS device the following two scripts may be run to accomplish the same task.
 
 * client_scripts
+
   + ├── set_access_key_and_secret.py
   + ├── set_keychain.py
 
@@ -69,15 +70,15 @@ ____________________
 * Inside of the `site-packages` directory create a directory named `pythonista_dropbox`
 * Inside of the `site-pacages` directory create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
-    * pipista.py
-    * dropbox_pipista.py
+* pipista.py
+* dropbox_pipista.py
 
 Open and run the `pipista.py` script to install the setuptools package.
 
 * Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
 * Create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
-        * adapters.py
+* adapters.py
         * sensitive_data.py
         * request_auth_token.py
         * client.py
@@ -85,7 +86,7 @@ Open and run the `pipista.py` script to install the setuptools package.
 
 Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
-    * set_keychain.py
+* set_keychain.py
     * set_access_key_and_secret.py
 
 
