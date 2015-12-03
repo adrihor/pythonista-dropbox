@@ -42,9 +42,9 @@ Using the authorization data that has been set after running `set-keychain`, thi
 
   On an iOS device the following two scripts may be run to accomplish the same task.
 
-  client_scripts
-  ├── set_access_key_and_secret.py
-  ├── set_keychain.py
+  * client_scripts
+    + ├── set_access_key_and_secret.py
+    + ├── set_keychain.py
 
 
 After setting up the keychain with credentials, a client used for accessing a Dropbox account may be used as follows:
