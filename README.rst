@@ -84,7 +84,7 @@ Open and run the `pipista.py` script to install the setuptools package.
   + sensitive_data.py
   + request_auth_token.py
   + client.py
-* __init__.py  (No need to put any contents into this one.)
+  + __init__.py  (No need to put any contents into this one.)
 
 Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
