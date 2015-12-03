@@ -104,6 +104,3 @@ Features
 * Includes a class called PythonistaModuleAdapter that create Pythonista module mockups for developing Python on a desktop computer that then functions in Pythonista in iOS without further modifications.
 * Download and install a source distribution into Pythonista from a Dropbox account.
 * Download and install pure Python modules from the cheese shop using pipista.py
-
-
-
