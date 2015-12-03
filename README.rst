@@ -79,15 +79,15 @@ Open and run the `pipista.py` script to install the setuptools package.
 * Create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
 * adapters.py
-        * sensitive_data.py
-        * request_auth_token.py
-        * client.py
-        * __init__.py  (No need to put any contents into this one.)
+* sensitive_data.py
+* request_auth_token.py
+* client.py
+* __init__.py  (No need to put any contents into this one.)
 
 Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
 * set_keychain.py
-    * set_access_key_and_secret.py
+* set_access_key_and_secret.py
 
 
 You may now install sdist packages from Dropbox or the PyPi cheese shop.
