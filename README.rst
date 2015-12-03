@@ -19,7 +19,7 @@ This package started with the following goals in mind:
 
 The adapter.PythonModuleAdapter has accomplished so far the first goal. See the doc string in pythonista_dropbox.adapter. Modules that don't exist on a non-iOS platform can be mocked with this class.
 
-The second goal is accomplished with some altering the gist at .. _pipista https://gist.github.com/pudquick/4116558 The pipista module is included in this package. Its altered dropbox counterpart is called dropbox_pipista.py. The dropbox_pipista.py module downloads sdist files from a given Dropbox path.
+The second goal is accomplished with some altering the gist at .. _pipista https://gist.github.com/pudquick/4116558 The pipista module is included in this package. Its altered dropbox counterpart is called dropbox_pipista.py. The dropbox_pipista.py module downloads Python source distribution file files from a given Dropbox path.
 
 After an install, the following two commands are available at the command line:
 
@@ -30,9 +30,11 @@ After an install, the following two commands are available at the command line:
 
   + Dropbox account password. 
           
-    It is not necessary and is used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
+    Entering a Dropbox account password is not necessary. It is simply used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
   + Dropbox application key
   + Dropbox application secret
+
+    __ Dropbox Apps https://www.dropbox.com/developers/apps
 
 
 Using the authorization data that has been set after running `set-keychain`, this will take the user through the process of obtaining an authorization token from Dropbox and setting the access token key and secret onto the keyring or keychain. 
@@ -59,7 +61,7 @@ After setting up the keychain with credentials, a client used for accessing a Dr
         print metadata
 
 
-See tests/test_dropbox_pipista.py for an example of how a sdist tarball may be installed from a tarball file stored in a Dropbox directory.
+See tests/test_dropbox_pipista.py for an example of how a Python source distribution file tarball may be installed from a tarball file stored in a Dropbox directory.
 
 
 Pythonista "install"
@@ -89,7 +91,7 @@ Close and restart Pythonista and run the scripts in side of `site-packages.pytho
 * set_access_key_and_secret.py
 
 
-You may now install sdist packages from Dropbox or the PyPi cheese shop.
+You may now install Python source distribution file packages from Dropbox or the PyPi cheese shop.
 
 See the example in tests/test_dropbox_pipista.py
 
