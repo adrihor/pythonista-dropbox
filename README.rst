@@ -34,7 +34,7 @@ After an install, the following two commands are available at the command line:
   + Dropbox application key
   + Dropbox application secret
 
-    __ Dropbox Apps https://www.dropbox.com/developers/apps
+   .. Dropbox Apps https://www.dropbox.com/developers/apps
 
 
 Using the authorization data that has been set after running `set-keychain`, this will take the user through the process of obtaining an authorization token from Dropbox and setting the access token key and secret onto the keyring or keychain. 
@@ -79,10 +79,11 @@ Open and run the `pipista.py` script to install the setuptools package.
 * Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
 * Create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
-* adapters.py
-* sensitive_data.py
-* request_auth_token.py
-* client.py
+
+  + adapters.py
+  + sensitive_data.py
+  + request_auth_token.py
+  + client.py
 * __init__.py  (No need to put any contents into this one.)
 
 Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
