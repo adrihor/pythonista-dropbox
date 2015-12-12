@@ -11,8 +11,14 @@ except ImportError:
 from pythonista_dropbox.adapters import Platform, PythonistaModuleAdapter
 
 # mock the Pythonista modules
-modules = ('webbrowser', 'clipboard', 'keychain', 'dropbox')
-webbrowser, clipboard, keychain, dropbox = [
+modules = (
+    'webbrowser',
+    'clipboard',
+    'keychain',
+    'dropbox',
+    'console',
+    )
+webbrowser, clipboard, keychain, dropbox, console = [
     PythonistaModuleAdapter(module) for module
     in modules
 ]
@@ -22,6 +28,10 @@ if not platform.pythonista:
     """if not on iOS, use dropbox-sdk-python rather than PyPi dropbox SDK"""
     import dropbox as _dropbox
     dropbox.dropbox = _dropbox
+
+    def _print(string):
+        print(string)
+    console.alert = _print
 
 
 keychain.keychain = keyring  # differing name for keyrin in Pythonista
@@ -47,16 +57,20 @@ credentials_keys = \
     ('dropbox password', 'app key', 'app secret', 'oauth token'),
 if platform.pythonista:
     # all except the last one, no 'oauth token'
-    credentials_keys = tuple(list(credentials_keys)[:-1])
-_credentials = dict(zip(
+    credentials_keys, credentials = [
+        tuple(list(item)[:-1]) for item in (credentials_keys, credentials)
+    ]
+credentials = dict(zip(
     credentials_keys,
     credentials
 ))
-message = "The credentials have not been set on the keyring: {0}".format(
-    ', '.join([key for key, value in _credentials.items() if not value]))
 
-
-assert all(credentials), message
+try:
+    assert all(credentials)
+except AssertionError:
+    message = "The credentials have not been set on the keyring: {0}".format(
+        ', '.join([key for key, value in credentials.items() if not value]))
+    console.alert(message)
 
 
 def get_session():
@@ -92,8 +106,8 @@ def set_keyring(access_token):
         access_token_keys
     ):
         keychain.set_password(name, service, access_token[cred_key])
-        print("The app {0} is in the keychain under ('{1}', '{2}')".
-              format(cred_key, name, service))
+        console.alert("The app {0} is in the keychain under ('{1}', '{2}')".
+                      format(cred_key, name, service))
 
 
 def main():
@@ -104,7 +118,7 @@ def main():
     from pythonista_dropbox.client import get_client
     if not platform.pythonista:
         client = get_client(TOKEN)
-        print(client.users_get_current_account())
+        console.alert(client.users_get_current_account())
         return
     try:
         session = get_session()
@@ -113,7 +127,7 @@ def main():
         # For easy pasting into web browser interface
         # in Pythonista, optional. It may be typed manually.
         clipboard.set(DROPBOX_PWD)
-        print("open this url:", url)
+        print(', '.join(("open this url:", url)))
         webbrowser.open(url)
         raw_input()
     except dropbox.rest.ErrorResponse as err:
