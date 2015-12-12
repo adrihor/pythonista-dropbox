@@ -29,7 +29,7 @@ if not platform.pythonista:
     import dropbox as _dropbox
     dropbox.dropbox = _dropbox
 
-    def _print(string):
+    def _print(string, *args, **kwargs):
         print(string)
     console.alert = _print
 
@@ -70,7 +70,16 @@ try:
 except AssertionError:
     message = "The credentials have not been set on the keyring: {0}".format(
         ', '.join([key for key, value in credentials.items() if not value]))
-    console.alert(message)
+    # title[, message, button1, button2, button3, hide_cancel_button=False]
+    if platform.pythonista:
+        kwargs = {'hide_cancel_button': True}
+        title = 'Please note:'
+        button1 = "OK"
+        args = (title, message, button1)
+    else:
+        kwargs, args = {}, ()
+
+    console.alert(message, *args, **kwargs)
 
 
 def get_session():
