@@ -212,7 +212,9 @@ def _ungzip(a_gz=None, path='.'):
             gz_check = ''
         finally:
             f.close()
-        if gz_check != '\x1f\x8b\x08':
+        check_string = '\x1f\x8b\x08' if platform.pythonista \
+            else b'\x1f\x8b\x08'
+        if gz_check != check_string:
             print("%s: %s: does not appear to be a gzip file" %
                   (fname, a_gz))
             return
