@@ -32,6 +32,14 @@ if not platform.pythonista:
     def _print(string, *args, **kwargs):
         print(string)
     console.alert = _print
+if platform.pythonista:
+    console_kwargs = {'hide_cancel_button': True}
+    title = 'Please note:'
+    button1 = "OK"
+    message = None
+    console_args = (title, message, button1)
+else:
+    console_kwargs, console_args = {}, (None, ) * 3
 
 
 keychain.keychain = keyring  # differing name for keyrin in Pythonista
@@ -70,16 +78,10 @@ try:
 except AssertionError:
     message = "The credentials have not been set on the keyring: {0}".format(
         ', '.join([key for key, value in credentials.items() if not value]))
-    # title[, message, button1, button2, button3, hide_cancel_button=False]
-    if platform.pythonista:
-        kwargs = {'hide_cancel_button': True}
-        title = 'Please note:'
-        button1 = "OK"
-        args = (title, message, button1)
-    else:
-        kwargs, args = {}, ()
-
-    console.alert(message, *args, **kwargs)
+    _args = list(console_args)
+    _args[1] = message
+    _args = tuple(_args)
+    console.alert(message, *_args, **console_kwargs)
 
 
 def get_session():
@@ -115,8 +117,13 @@ def set_keyring(access_token):
         access_token_keys
     ):
         keychain.set_password(name, service, access_token[cred_key])
-        console.alert("The app {0} is in the keychain under ('{1}', '{2}')".
-                      format(cred_key, name, service))
+
+        _args = list(console_args)
+        message = "The app {0} is in the keychain under ('{1}', '{2}')".\
+            format(cred_key, name, service)
+        _args[1] = message
+        _args = tuple(_args)
+        console.alert(*_args, **console_kwargs)
 
 
 def main():
@@ -127,7 +134,10 @@ def main():
     from pythonista_dropbox.client import get_client
     if not platform.pythonista:
         client = get_client(TOKEN)
-        console.alert(client.users_get_current_account())
+        _args = list(console_args)
+        _args[1] = str(client.users_get_current_account())
+        _args = tuple(_args)
+        console.alert(*_args, **console_kwargs)
         return
     try:
         session = get_session()
