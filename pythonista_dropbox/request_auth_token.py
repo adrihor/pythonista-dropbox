@@ -48,7 +48,7 @@ _credentials = dict(zip(
     credentials
 ))
 message = "The credentials have not been set on the keyring: {0}".format(
-    ', '.join([key for key, value in _credentials.items() if value]))
+    ', '.join([key for key, value in _credentials.items() if not value]))
 
 
 assert all(credentials), message
