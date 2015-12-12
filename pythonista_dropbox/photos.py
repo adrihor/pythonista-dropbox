@@ -32,7 +32,7 @@ def pick_image(
     StringIO = PythonistaModuleAdapter('StringIO')
     if not StringIO.pythonista:
         from io import BytesIO
-        StringIO.StringIO = BytesIO 
+        StringIO.StringIO = BytesIO
     else:
         from StringIO import StringIO as _StringIO
         StringIO.StringIO = _StringIO
@@ -45,12 +45,12 @@ def pick_image(
     images = []
     for root, dirs, files in os.walk(images_dir):
         for file in files:
-            with open(os.path.join(images_dir, file), 'r') as fh:
-                binary_image = StringIO(fh.read())
+            with open(os.path.join(images_dir, file), 'rb') as fh:
+                binary_image = StringIO.StringIO(fh.read())
             binary_image.seek(0)
             images.append(binary_image)
     if kwargs['raw_data']:
-        """mocked photos and mocked meta_data like that returned 
+        """mocked photos and mocked meta_data like that returned
         in Pythonista photos.pick_image"""
         return ((binary_image, photo_meta_data)
                 for binary_image, photo_meta_data
