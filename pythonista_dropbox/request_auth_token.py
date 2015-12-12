@@ -43,9 +43,15 @@ credentials = DROPBOX_PWD, APP_KEY, APP_SECRET, TOKEN = [
     for service, account
     in zip(services, accounts)
 ]
-assert all(credentials), "The credentials have not been "\
-    "set on the keyring: {0}".format(
-    ', '.join(credentials))
+_credentials = dict(zip(
+    ('dropbox password', 'app key', 'app secret', 'oauth token'),
+    credentials
+))
+message = "The credentials have not been set on the keyring: {0}".format(
+    ', '.join([key for key, value in _credentials.items() if value]))
+
+
+assert all(credentials), message
 
 
 def get_session():
