@@ -43,8 +43,13 @@ credentials = DROPBOX_PWD, APP_KEY, APP_SECRET, TOKEN = [
     for service, account
     in zip(services, accounts)
 ]
-_credentials = dict(zip(
+credentials_keys = \
     ('dropbox password', 'app key', 'app secret', 'oauth token'),
+if platform.pythonista:
+    # all except the last one, no 'oauth token'
+    credentials_keys = tuple(list(credentials_keys)[:-1])
+_credentials = dict(zip(
+    credentials_keys,
     credentials
 ))
 message = "The credentials have not been set on the keyring: {0}".format(
