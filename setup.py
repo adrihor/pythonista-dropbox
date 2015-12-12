@@ -18,7 +18,7 @@ requirements = [
     # TODO: put package requirements here
     'dropbox==4.0',
     'keyring',
-    'dropbox-sdk-python',
+    # 'dropbox-sdk-python', not in cheese shop
 ]
 
 test_requirements = [
@@ -32,7 +32,6 @@ commands = (
     'set-keychain',
 )
 app_directories = (
-    'pythonista_dropbox.request_auth_token',
     'pythonista_dropbox.client_scripts.set_keychain',
 )
 format_kwargs = [
