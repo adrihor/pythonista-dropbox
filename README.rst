@@ -59,16 +59,14 @@ ____________________
 
 
 * Inside of the `site-packages` directory create a directory named `pythonista_dropbox`
-* Inside of the `site-pacages` directory create scripts with the following names and paste the contents from the scripts with the same name from this package:
+* Inside of the `site-packages` directory create scripts with the following names and paste the contents from the scripts with the same name from this package:
 
 * pipista.py
 * dropbox_pipista.py
 
 Open and run the `pipista.py` script to install the setuptools package.
 
-* Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
-* Create scripts with the following names and paste the contents from the scripts with the same name from this package:
-
+* Create scripts with the following names and paste the contents from the scripts with the same name from this package. These scripts are in site-packages/pythonista_dropbox
 
   + adapters.py
   + sensitive_data.py
@@ -76,17 +74,21 @@ Open and run the `pipista.py` script to install the setuptools package.
   + client.py
   + __init__.py  (No need to put any contents into this one.)
 
+* Inside of the `pythonista_dropbox` directory create a directory named `client_scripts`
+
+Inside of the `client_scripts` create scripts with the same name and paste the contents of:
+
+   + set_keychain.py
+
 Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
 * set_keychain.py
-* set_access_key_and_secret.py
-
-
+  
 You may now install Python source distribution file packages from Dropbox or the PyPi cheese shop.
 
 See the example in tests/test_dropbox_pipista.py
 
-
+N.B. Since this is impossible to do in an automated fashion, it is difficult to test in a way that is not tedious. Please notify me of anything confusing. "It works for me." makes me cringe. It does work for me and if it doesn't work for you, I likely left out some valuable information. :-)
 
 Features
 --------
