@@ -43,7 +43,9 @@ credentials = DROPBOX_PWD, APP_KEY, APP_SECRET, TOKEN = [
     for service, account
     in zip(services, accounts)
 ]
-assert all(credentials)
+assert all(credentials), "The credentials have not been "\
+    "set on the keyring: {0}".format(
+    ', '.join(credentials))
 
 
 def get_session():
