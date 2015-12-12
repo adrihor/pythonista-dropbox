@@ -22,7 +22,13 @@ import zipfile
 from pythonista_dropbox.client import get_client
 from pythonista_dropbox.adapters import Platform, PythonistaModuleAdapter
 
+
 platform = Platform()
+if not platform.pythonista:
+    from pythonista_dropbox.request_auth_token import TOKEN
+    args = (TOKEN, )
+else:
+    args = ()
 
 urllib2 = PythonistaModuleAdapter('urllib2')
 if not urllib2.pythonista:
@@ -90,8 +96,16 @@ def _chunk_read(response, chunk_size=32768, report_hook=None, filename=None):
 def _download(src_dict, print_progress=True):
     if print_progress:
         print('* Downloading:', src_dict['url'])
-    client = get_client()
-    data = client.get_file(src_dict['url'])
+    client = get_client(*args)
+    if not platform.pythonista:
+        from io import BytesIO
+        import contextlib
+        client.get_file = client.files_download
+        meta_data, file_data = client.get_file(src_dict['url'])
+        with contextlib.closing(file_data) as _data:
+            data = BytesIO(_data.content)
+    else:
+        data = client.get_file(src_dict['url'])
     filename = src_dict['filename']
     if data:
         if os.path.exists(filename):

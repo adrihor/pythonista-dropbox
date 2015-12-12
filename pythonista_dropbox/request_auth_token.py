@@ -50,19 +50,6 @@ def get_session():
     return session
 
 
-if not platform.pythonista:
-    def get_client_non_ios(token):
-        client = dropbox.Dropbox(token)
-        return client
-
-    get_client = get_client_non_ios
-else:
-
-    def get_client(session):
-        client = dropbox.client.DropboxClient(session)
-        return client
-
-
 def get_request_token(session):
     request_token = session.obtain_request_token()
     return request_token
@@ -73,11 +60,33 @@ def get_authorize_url(session, request_token):
     return url
 
 
+def set_keyring(access_token):
+    """set the access token key and access token secret to the keyring"""
+    access_token_keys = ('key', 'secret',)
+    app_accounts = [' '.join(('access token', access_token_key))
+                    for access_token_key in access_token_keys]
+    app_services = ('access token {0}', ) * 2
+    app_services = [_service.format(_service) for _service in services[1:]]
+    access_token = dict(zip(
+        access_token_keys,
+        [getattr(access_token, attr)
+         for attr in access_token_keys]))
+    for name, service, cred_key in zip(
+        app_services,
+        app_accounts,
+        access_token_keys
+    ):
+        keychain.set_password(name, service, access_token[cred_key])
+        print("The app {0} is in the keychain under ('{1}', '{2}')".
+              format(cred_key, name, service))
+
+
 def main():
     """This main stores an access key and access token in the keyring
     using the arguments in services and accounts.
     This function has to be run prior to getting a client in client.py.
     """
+    from pythonista_dropbox.client import get_client
     if not platform.pythonista:
         client = get_client(TOKEN)
         print(client.users_get_current_account())
@@ -102,23 +111,7 @@ def main():
         raise RuntimeError(message)
     try:
         access_token = session.obtain_access_token(request_token)
-        access_token_keys = ('key', 'secret',)
-        app_accounts = [' '.join(('access token', access_token_key))
-                        for access_token_key in access_token_keys]
-        app_services = ('access token {0}', ) * 2
-        app_services = [_service.format(_service) for _service in services[1:]]
-        access_token = dict(zip(
-            access_token_keys,
-            [getattr(access_token, attr)
-             for attr in access_token_keys]))
-        for name, service, cred_key in zip(
-            app_services,
-            app_accounts,
-            access_token_keys
-        ):
-            keychain.set_password(name, service, access_token[cred_key])
-            print("The app {0} is in the keychain under ('{1}', '{2}')".
-                  format(cred_key, name, service))
+        set_keyring(access_token)
         return 0
     except dropbox.rest.ErrorResponse as err:
         print(err.body)

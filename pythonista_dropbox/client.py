@@ -1,13 +1,21 @@
 import dropbox
 from pythonista_dropbox.request_auth_token import (
-    keychain,
     get_session,
+    keychain,
+    platform,
+    set_keyring,
 )
 
 keychain_key_words = (
     ('default app', 'access token key', ),
     ('default app', 'access token secret', ),
 )
+
+if not platform.pythonista:
+    # need to put non-False values on keyring
+    access_token = type(
+        'AccessToken', (), {'key': 'mock key', 'secret': 'mock secret'})
+    set_keyring(access_token)
 
 ACCESS = ACCESS_KEY, ACCESS_SECRET = [keychain.get_password(service, account)
                                       for service, account
@@ -21,13 +29,22 @@ assert all(ACCESS), \
     ))
 
 
-def get_client(access_key=None, access_secret=None):
-    """returns a dropbox client
-    see https://www.dropbox.com/developers-v1/core/start/python
-    """
-    access_key = ACCESS_KEY if access_key is None else access_key
-    access_secret = ACCESS_SECRET if access_secret is None else access_secret
-    session = get_session()
-    session.set_token(access_key, access_secret)
-    client = dropbox.client.DropboxClient(session)
-    return client
+if not platform.pythonista:
+    def get_client_non_ios(token, *args):
+        client = dropbox.Dropbox(token)
+        return client
+
+    get_client = get_client_non_ios
+else:
+
+    def get_client(access_key=None, access_secret=None, *args):
+        """returns a dropbox client
+        see https://www.dropbox.com/developers-v1/core/start/python
+        """
+        access_key = ACCESS_KEY if access_key is None else access_key
+        access_secret = ACCESS_SECRET if access_secret is None \
+            else access_secret
+        session = get_session()
+        session.set_token(access_key, access_secret)
+        client = dropbox.client.DropboxClient(session)
+        return client
