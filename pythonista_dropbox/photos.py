@@ -28,18 +28,25 @@ def pick_image(
     Return what picker in iOS would return
     """
     import json
-    from StringIO import StringIO
+
+    StringIO = PythonistaModuleAdapter('StringIO')
+    if not StringIO.pythonista:
+        from io import BytesIO
+        StringIO.StringIO = BytesIO 
+    else:
+        from StringIO import StringIO as _StringIO
+        StringIO.StringIO = _StringIO
 
     exifs = []
-    _, _, files = os.walk(photo_meta_data).next()
-    for file in files:
-        with open(os.path.join(photo_meta_data, file), 'r') as fh:
-            exifs.append(json.load(fh))
+    for root, dirs, files in os.walk(photo_meta_data):
+        for file in files:
+            with open(os.path.join(photo_meta_data, file), 'r') as fh:
+                exifs.append(json.load(fh))
     images = []
-    _, _, files = os.walk(images_dir).next()
-    for file in files:
-        with open(os.path.join(images_dir, file), 'r') as fh:
-            binary_image = StringIO(fh.read())
+    for root, dirs, files in os.walk(images_dir):
+        for file in files:
+            with open(os.path.join(images_dir, file), 'r') as fh:
+                binary_image = StringIO(fh.read())
             binary_image.seek(0)
             images.append(binary_image)
     if kwargs['raw_data']:

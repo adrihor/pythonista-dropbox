@@ -8,29 +8,40 @@ try:  # keychain on non-Pythonista is called keyring
     import keyring
 except ImportError:
     import keychain as keyring
-import dropbox
-from pythonista_dropbox.adapters import PythonistaModuleAdapter
+from pythonista_dropbox.adapters import Platform, PythonistaModuleAdapter
 
 # mock the Pythonista modules
-modules = ('webbrowser', 'clipboard', 'keychain')
-webbrowser, clipboard, keychain = [PythonistaModuleAdapter(module) for module
-                                   in modules]
+modules = ('webbrowser', 'clipboard', 'keychain', 'dropbox')
+webbrowser, clipboard, keychain, dropbox = [
+    PythonistaModuleAdapter(module) for module
+    in modules
+]
+platform = Platform()
+if not platform.pythonista:
+    raw_input = input
+    import dropbox as _dropbox
+    dropbox.dropbox = _dropbox
+
+
 keychain.keychain = keyring  # differing name for keyrin in Pythonista
+DEFAULT_APP = 'default app'
 services = (  # keychain args
     'dropbox',
-    'default app',
-    'default app',
-)
+) + (DEFAULT_APP, ) * 3
 accounts = (  # keychain args
     'password',
     'app key',
     'app secret',
+    'oauth token',
 )
 
+
 ACCESS_TYPE = 'dropbox'
-DROPBOX_PWD, APP_KEY, APP_SECRET = [keychain.get_password(service, account)
-                                    for service, account
-                                    in zip(services, accounts)]
+DROPBOX_PWD, APP_KEY, APP_SECRET, TOKEN = [
+    keychain.get_password(service, account)
+    for service, account
+    in zip(services, accounts)
+]
 
 
 def get_session():
@@ -39,9 +50,17 @@ def get_session():
     return session
 
 
-def get_client(session):
-    client = dropbox.client.DropboxClient(session)
-    return client
+if not platform.pythonista:
+    def get_client_non_ios(token):
+        client = dropbox.Dropbox(token)
+        return client
+
+    get_client = get_client_non_ios
+else:
+
+    def get_client(session):
+        client = dropbox.client.DropboxClient(session)
+        return client
 
 
 def get_request_token(session):
@@ -59,6 +78,10 @@ def main():
     using the arguments in services and accounts.
     This function has to be run prior to getting a client in client.py.
     """
+    if not platform.pythonista:
+        client = get_client(TOKEN)
+        print(client.users_get_current_account())
+        return
     try:
         session = get_session()
         request_token = get_request_token(session)

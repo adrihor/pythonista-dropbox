@@ -1,4 +1,4 @@
-from pythonista_dropbox.adapters import PythonistaModuleAdapter
+from pythonista_dropbox.adapters import PythonistaModuleAdapter, Platform
 try:
     import keyring
 except ImportError:
@@ -7,6 +7,9 @@ import sys
 
 keychain = PythonistaModuleAdapter('keychain')
 keychain.keychain = keyring
+platform = Platform()
+if not platform.pythonista:
+    raw_input = input
 
 
 def set(services, accounts):

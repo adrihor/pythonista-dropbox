@@ -16,7 +16,7 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     # TODO: put package requirements here
-    'dropbox==3.42,',
+    'dropbox==4.0',
     'keyring',
 ]
 
