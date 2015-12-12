@@ -5,6 +5,7 @@ from pythonista_dropbox.request_auth_token import (
     platform,
     set_keyring,
 )
+from contextlib import closing
 
 keychain_key_words = (
     ('default app', 'access token key', ),
@@ -32,11 +33,17 @@ assert all(ACCESS), \
 if not platform.pythonista:
     def get_client_non_ios(token, *args):
         client = dropbox.Dropbox(token)
+
+        compatibility_attrs = (
+            ('metadata', 'files_get_metadata'),
+        )
+
+        for attr, function in compatibility_attrs:
+            setattr(client, attr, getattr(client, function))
         return client
 
     get_client = get_client_non_ios
 else:
-
     def get_client(access_key=None, access_secret=None, *args):
         """returns a dropbox client
         see https://www.dropbox.com/developers-v1/core/start/python

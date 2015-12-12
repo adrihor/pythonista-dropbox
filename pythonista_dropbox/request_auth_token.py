@@ -37,11 +37,12 @@ accounts = (  # keychain args
 
 
 ACCESS_TYPE = 'dropbox'
-DROPBOX_PWD, APP_KEY, APP_SECRET, TOKEN = [
+credentials = DROPBOX_PWD, APP_KEY, APP_SECRET, TOKEN = [
     keychain.get_password(service, account)
     for service, account
     in zip(services, accounts)
 ]
+assert all(credentials)
 
 
 def get_session():

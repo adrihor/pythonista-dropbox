@@ -16,10 +16,10 @@ def test_access_key_and_secret_set():
 
 def test_client():
     from pythonista_dropbox.client import get_client
-    client = get_client()
+    from pythonista_dropbox.request_auth_token import TOKEN
+    client = get_client(TOKEN)
 
-    path = "Public"
+    path = "/Public"
     public_metadata = client.metadata(path)
 
-    assert public_metadata.get('root') == 'dropbox'
-    assert public_metadata.get('path') == os.path.join('/', path)
+    assert os.path.join('/', public_metadata.name) == path
