@@ -21,32 +21,29 @@ The adapter.PythonModuleAdapter has accomplished so far the first goal. See the 
 
 The second goal is accomplished with some altering the gist at .. _pipista https://gist.github.com/pudquick/4116558 The pipista module is included in this package. Its altered dropbox counterpart is called dropbox_pipista.py. The dropbox_pipista.py module downloads Python source distribution file files from a given Dropbox path.
 
-After an install, the following two commands are available at the command line:
+After an install, the following command is available at the command line:
 
 * `set-keychain`
-* `request-auth-token`
 
-  This command will ask for and set 3 items onto the keyring or keychain:
+  The `set-keychain` command will ask for and set 4 items onto the keyring or keychain:
 
   + Dropbox account password. 
           
     Entering a Dropbox account password is not necessary. It is simply used to put onto the clipboard for convenient pasting on an iOS device when having to log into Dropbox in the Pythonista web browser.
   + Dropbox application key
   + Dropbox application secret
+  + Dropbox OAuth token for use in non-Pythonista environment. This OAuth token may be generated in your Dropbox app control panel. 
 
    .. Dropbox Apps https://www.dropbox.com/developers/apps
 
 
-Using the authorization data that has been set after running `set-keychain`, this will take the user through the process of obtaining an authorization token from Dropbox and setting the access token key and secret onto the keyring or keychain. 
 
-On a desktop, url may be copied and pasted into a browser. On an iOS device, Pythonista's web browser is opened with the generated authorization url.
-
-On an iOS device the following two scripts may be run to accomplish the same task.
+On an iOS device the following two scripts must be run to set the auth key and auth secret:
 
 * client_scripts
 
-  + ├── set_access_key_and_secret.py
   + ├── set_keychain.py
+  + ├── set_access_key_and_secret.py
 
 
 After setting up the keychain with credentials, a client used for accessing a Dropbox account may be used as follows:
