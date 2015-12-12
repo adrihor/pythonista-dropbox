@@ -18,6 +18,7 @@ requirements = [
     # TODO: put package requirements here
     'dropbox==4.0',
     'keyring',
+    'dropbox-sdk-python',
 ]
 
 test_requirements = [
