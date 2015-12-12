@@ -44,7 +44,7 @@ if not platform.pythonista:
 
     get_client = get_client_non_ios
 else:
-    def get_client(access_key=None, access_secret=None, *args):
+    def _get_client(access_key=None, access_secret=None, *args):
         """returns a dropbox client
         see https://www.dropbox.com/developers-v1/core/start/python
         """
@@ -55,3 +55,5 @@ else:
         session.set_token(access_key, access_secret)
         client = dropbox.client.DropboxClient(session)
         return client
+
+    get_client = _get_client
