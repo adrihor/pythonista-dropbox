@@ -40,12 +40,6 @@ After an install, the following command is available at the command line:
 
 On an iOS device the following two scripts must be run to set the auth key and auth secret:
 
-* client_scripts
-
-  + ├── set_keychain.py
-  + ├── set_access_key_and_secret.py
-
-
 After setting up the keychain with credentials, a client used for accessing a Dropbox account may be used as follows:
 
 ::
