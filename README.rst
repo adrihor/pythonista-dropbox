@@ -80,7 +80,7 @@ Inside of the `client_scripts` create scripts with the same name and paste the c
 
    + set_keychain.py
 
-Close and restart Pythonista and run the scripts in side of `site-packages.pythonista_dropbox.client_scripts` in the following order:
+Close and restart Pythonista and run the following scripts inside of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
 * set_keychain.py
   
