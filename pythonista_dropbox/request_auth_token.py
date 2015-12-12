@@ -19,6 +19,7 @@ webbrowser, clipboard, keychain, dropbox = [
 platform = Platform()
 if not platform.pythonista:
     raw_input = input
+    """if not on iOS, use dropbox-sdk-python rather than PyPi dropbox SDK"""
     import dropbox as _dropbox
     dropbox.dropbox = _dropbox
 
