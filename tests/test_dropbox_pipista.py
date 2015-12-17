@@ -7,7 +7,10 @@ else:
     from pythonista_dropbox import dropbox_pipista
 
 
+# This is a file in your personal Dropbox directory residing in a Dropbox
+# directory
 filename = 'hello_world-0.1.0.tar.gz'
+# This is a path in your personal Dropbox directory.
 tarball_path = os.path.join(
     '/PyPi-tarballs/',
     filename
