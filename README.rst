@@ -19,7 +19,7 @@ This package started with the following goals in mind:
 
 The adapter.PythonModuleAdapter has accomplished so far the first goal. See the doc string in pythonista_dropbox.adapter. Modules that don't exist on a non-iOS platform can be mocked with this class.
 
-The second goal is accomplished with some altering the gist at .. _pipista https://gist.github.com/pudquick/4116558 The pipista module is included in this package. Its altered dropbox counterpart is called dropbox_pipista.py. The dropbox_pipista.py module downloads Python source distribution file files from a given Dropbox path.
+The second goal is accomplished with some altering the gist at pipista_ The pipista module is included in this package. Its altered dropbox counterpart is called dropbox_pipista.py. The dropbox_pipista.py module downloads Python source distribution file files from a given Dropbox path.
 
 After an install, the following command is available at the command line:
 
@@ -96,3 +96,5 @@ Features
 * Includes a class called PythonistaModuleAdapter that create Pythonista module mockups for developing Python on a desktop computer that then functions in Pythonista in iOS without further modifications.
 * Download and install a source distribution into Pythonista from a Dropbox account.
 * Download and install pure Python modules from the cheese shop using pipista.py
+
+.. _pipista: https://gist.github.com/pudquick/4116558
