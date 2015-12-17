@@ -78,7 +78,7 @@ Open and run the `pipista.py` script to install the setuptools package.
 
 Inside of the `client_scripts` create scripts with the same name and paste the contents of:
 
-   + set_keychain.py
+* set_keychain.py
 
 Close and restart Pythonista and run the following scripts inside of `site-packages.pythonista_dropbox.client_scripts` in the following order:
 
